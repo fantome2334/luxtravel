@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxTravel — Vols & Hôtels au meilleur prix</title>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F9F5EF;
+    --dark: #1A1612;
+    --gold: #C4973A;
+    --gold-light: #E8C87A;
+    --muted: #8A8278;
+    --border: rgba(26,22,18,0.1);
+    --card-bg: #FFFFFF;
+    --section-bg: #F2EDE5;
+    --whatsapp: #25D366;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px; font-weight: 400; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--dark);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-size: 13px; font-weight: 400; letter-spacing: 0.5px;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--dark); }
+  .nav-cta {
+    background: var(--dark); color: var(--cream);
+    font-size: 12px; font-weight: 500; letter-spacing: 1px;
+    text-transform: uppercase; padding: 10px 20px;
+    border: none; cursor: pointer; text-decoration: none;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold); }
+
+  /* HERO */
+  .hero {
+    padding: 80px 5% 60px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--gold);
+    border: 1px solid var(--gold-light); padding: 6px 14px;
+    margin-bottom: 24px;
+  }
+  .hero-badge::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--gold); border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+  .hero h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(42px, 5vw, 64px); font-weight: 300; line-height: 1.1;
+    letter-spacing: -1px; margin-bottom: 20px;
+  }
+  .hero h1 em { font-style: italic; color: var(--gold); }
+  .hero p { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 32px; max-width: 420px; }
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-dark {
+    background: var(--dark); color: var(--cream);
+    font-size: 13px; font-weight: 500; letter-spacing: 0.5px;
+    padding: 13px 28px; border: none; cursor: pointer;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .btn-dark:hover { background: var(--gold); }
+  .btn-outline {
+    background: transparent; color: var(--dark);
+    font-size: 13px; font-weight: 400;
+    padding: 12px 28px; border: 1px solid var(--border);
+    cursor: pointer; text-decoration: none; transition: border-color 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--dark); }
+  .hero-visual {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .hero-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    padding: 20px; position: relative; overflow: hidden;
+  }
+  .hero-card:first-child { grid-column: 1 / -1; }
+  .hero-card-img {
+    width: 100%; height: 120px; object-fit: cover;
+    background: var(--section-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; margin-bottom: 12px;
+  }
+  .hero-card-tag {
+    font-size: 10px; font-weight: 500; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .hero-card h4 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .hero-card p { font-size: 12px; color: var(--muted); }
+  .discount-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--gold); color: white;
+    font-size: 11px; font-weight: 500; padding: 4px 8px;
+  }
+  .hero-stats {
+    display: flex; gap: 32px; margin-top: 32px; padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 28px; font-weight: 300; color: var(--dark);
+  }
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; }
+
+  /* SECTIONS */
+  section { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 12px; display: block;
+  }
+  .section-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(32px, 4vw, 48px); font-weight: 300;
+    line-height: 1.15; margin-bottom: 12px;
+  }
+  .section-title em { font-style: italic; }
+  .section-sub { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 500px; margin-bottom: 48px; }
+
+  /* VOLS */
+  #vols { background: var(--cream); }
+  .vols-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .vol-card {
+    background: var(--card-bg); padding: 28px 24px;
+    transition: background 0.2s;
+  }
+  .vol-card:hover { background: var(--section-bg); }
+  .vol-icon { font-size: 32px; margin-bottom: 16px; display: block; }
+  .vol-class {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px; font-weight: 400; margin-bottom: 8px;
+  }
+  .vol-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .vol-price {
+    font-size: 13px; font-weight: 500;
+    color: var(--gold); letter-spacing: 0.3px;
+  }
+  .vol-includes { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .vol-includes li { font-size: 12px; color: var(--muted); line-height: 1.8; list-style: none; padding-left: 14px; position: relative; }
+  .vol-includes li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
+
+  /* délai réservation */
+  .vol-delay {
+    margin-top: 16px; padding: 18px 24px;
+    background: var(--section-bg);
+    border-left: 3px solid var(--gold);
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .vol-delay-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .vol-delay p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .vol-delay strong { color: var(--dark); font-weight: 500; }
+
+  .vol-note {
+    margin-top: 16px; padding: 24px 28px;
+    background: var(--dark); color: var(--cream);
+    display: flex; align-items: center; gap: 24px;
+  }
+  .vol-note-icon { font-size: 28px; flex-shrink: 0; }
+  .vol-note p { font-size: 14px; line-height: 1.6; opacity: 0.85; }
+  .vol-note strong { color: var(--gold-light); font-weight: 500; }
+
+  /* HÔTELS */
+  #hotels { background: var(--section-bg); max-width: 100%; padding: 80px 5%; }
+  #hotels .inner { max-width: 1200px; margin: 0 auto; }
+  .hotel-category { margin-bottom: 48px; }
+  .cat-title {
+    font-size: 11px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cat-title::before {
+    content: ''; width: 24px; height: 1px; background: var(--gold);
+  }
+  .hotels-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .hotel-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    overflow: hidden; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .hotel-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+  .hotel-img {
+    width: 100%; height: 100px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; background: var(--section-bg);
+    position: relative;
+  }
+  .hotel-img-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    font-size: 9px; font-weight: 500; letter-spacing: 1px;
+    text-transform: uppercase; color: white;
+    background: rgba(26,22,18,0.6); padding: 4px 8px; text-align: center;
+  }
+  .hotel-info { padding: 14px; }
+  .hotel-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .hotel-tier { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; }
+
+  .hotels-row.luxury .hotel-img { background: #EDE8DF; }
+  .hotels-row.upscale .hotel-img { background: #E8EDF2; }
+  .hotels-row.midscale .hotel-img { background: #EDF2E8; }
+  .hotels-row.extended .hotel-img { background: #F2EBE8; }
+  .hotels-row.hilton .hotel-img { background: #EDE8DF; }
+  .hotels-row.hyatt .hotel-img { background: #E8EAF0; }
+
+  /* CONTACT */
+  #contact { background: var(--cream); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+  .tuto-steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex; gap: 20px; padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 36px; font-weight: 300; color: var(--gold);
+    line-height: 1; flex-shrink: 0; width: 36px;
+  }
+  .step-content h4 { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .step-content p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .step-content code {
+    display: block; margin-top: 10px;
+    background: var(--section-bg); padding: 10px 14px;
+    font-family: monospace; font-size: 12px; color: var(--dark);
+    border-left: 2px solid var(--gold); line-height: 1.6;
+  }
+
+  .contact-cta-box {
+    background: var(--dark); padding: 36px; color: var(--cream);
+    position: sticky; top: 84px;
+  }
+  .contact-cta-box h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 28px; font-weight: 300; margin-bottom: 12px; line-height: 1.2;
+  }
+  .contact-cta-box p { font-size: 14px; opacity: 0.7; line-height: 1.7; margin-bottom: 28px; }
+  .wa-btn {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    background: var(--whatsapp); color: white;
+    font-size: 14px; font-weight: 500; padding: 16px 24px;
+    text-decoration: none; border: none; cursor: pointer; width: 100%;
+    transition: opacity 0.2s; letter-spacing: 0.3px;
+  }
+  .wa-btn:hover { opacity: 0.9; }
+  .wa-icon { width: 22px; height: 22px; flex-shrink: 0; }
+  .contact-details {
+    margin-top: 24px; padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .contact-details p { font-size: 12px; opacity: 0.5; line-height: 1.8; }
+  .contact-details strong { color: var(--gold-light); font-weight: 500; opacity: 1; }
+  .response-badges { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+  .badge-item {
+    font-size: 11px; padding: 5px 12px;
+    border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: var(--cream);
+    padding: 40px 5%; display: flex;
+    justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .footer-logo {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px; font-weight: 400; letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .footer-logo span { color: var(--gold); }
+  footer p { font-size: 12px; opacity: 0.4; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 12px; opacity: 0.5; color: var(--cream); text-decoration: none; }
+  .footer-links a:hover { opacity: 1; }
+
+  .reveal { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    .vols-grid { grid-template-columns: 1fr; }
+    .hotels-row { grid-template-columns: repeat(2, 1fr); }
+    .contact-grid { grid-template-columns: 1fr; }
+    .contact-cta-box { position: static; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Lux<span>Travel</span></a>
+  <ul class="nav-links">
+    <li><a href="#vols">Billets d'avion</a></li>
+    <li><a href="#hotels">Hôtels</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Réserver via WhatsApp</a>
+</nav>
+
+<!-- HERO -->
+<div style="background: var(--cream); padding: 0 5%;">
+  <div class="hero">
+    <div class="hero-text reveal">
+      <span class="hero-badge">Offres exclusives — jusqu'à −50%</span>
+      <h1>Voyagez <em>mieux</em>,<br>dépensez moins</h1>
+      <p>Billets d'avion en Business & First Class et séjours dans les plus grands hôtels du monde — à des tarifs introuvables ailleurs.</p>
+      <div class="hero-btns">
+        <a href="#vols" class="btn-dark">Voir les vols</a>
+        <a href="#hotels" class="btn-outline">Hôtels</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">−50%</div>
+          <div class="stat-label">sur les billets</div>
+        </div>
+        <div>
+          <div class="stat-num">60+</div>
+          <div class="stat-label">marques hôtelières</div>
+        </div>
+        <div>
+          <div class="stat-num">24h</div>
+          <div class="stat-label">réponse garantie</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual reveal">
+      <div class="hero-card">
+        <div class="hero-card-img">✈️</div>
+        <span class="discount-badge">−50%</span>
+        <div class="hero-card-tag">Vol Business Class</div>
+        <h4>Paris → New York</h4>
+        <p>Air France • Direct • Départ flexible</p>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-img">🏨</div>
+        <span class="discount-badge">−40%</span>
+        <div class="hero-card-tag">Six Senses</div>
+        <h4>Ibiza Resort</h4>
+        <p>Suite Luxe · 7 nuits</p>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-img">🌴</div>
+        <span class="discount-badge">−45%</span>
+        <div class="hero-card-tag">InterContinental</div>
+        <h4>Bali Uluwatu</h4>
+        <p>Ocean View · 5 nuits</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOLS -->
+<div style="background: var(--cream);">
+<section id="vols">
+  <div class="reveal">
+    <span class="section-label">Billets d'avion</span>
+    <h2 class="section-title">Volez en <em>grande classe</em><br>à prix réduit</h2>
+    <p class="section-sub">Accédez à des tarifs négociés sur toutes les classes de voyage — jusqu'à −50% sur les vols Business et First Class des plus grandes compagnies.</p>
+  </div>
+
+  <div class="vols-grid reveal">
+    <div class="vol-card">
+      <span class="vol-icon">🥂</span>
+      <div class="vol-class">First Class</div>
+      <p class="vol-desc">L'expérience ultime en altitude. Suite privée, literie, gastronomie à bord et service personnalisé.</p>
+      <div class="vol-price">Jusqu'à −50% sur le tarif public</div>
+      <ul class="vol-includes">
+        <li>Suite privée fermée</li>
+        <li>Siège-lit 180°</li>
+        <li>Restauration gastronomique</li>
+        <li>Salon prioritaire accès</li>
+      </ul>
+    </div>
+    <div class="vol-card">
+      <span class="vol-icon">💼</span>
+      <div class="vol-class">Business Class</div>
+      <p class="vol-desc">Le parfait équilibre entre confort et performance. Siège-lit, Wi-Fi, et accès salons premium.</p>
+      <div class="vol-price">Jusqu'à −45% sur le tarif public</div>
+      <ul class="vol-includes">
+        <li>Siège-lit plat</li>
+        <li>Repas et boissons inclus</li>
+        <li>Bagages prioritaires</li>
+        <li>Accès lounge business</li>
+      </ul>
+    </div>
+    <div class="vol-card">
+      <span class="vol-icon">🎯</span>
+      <div class="vol-class">Premium Economy</div>
+      <p class="vol-desc">Plus d'espace, plus de confort, pour un budget maîtrisé. L'alternative intelligente.</p>
+      <div class="vol-price">Jusqu'à −40% sur le tarif public</div>
+      <ul class="vol-includes">
+        <li>Siège large reclinable</li>
+        <li>Repas inclus</li>
+        <li>Bagage supplémentaire</li>
+        <li>Embarquement prioritaire</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="vol-delay reveal">
+    <span class="vol-delay-icon">⏱️</span>
+    <p><strong>Délai de réservation :</strong> Les billets sont émis au maximum <strong>24 à 48h avant le départ</strong>, selon les politiques des compagnies aériennes. Pensez à nous contacter suffisamment en avance pour garantir votre place.</p>
+  </div>
+
+  <div class="vol-note reveal">
+    <span class="vol-note-icon">📅</span>
+    <p>Les billets sont disponibles en <strong>date fixe</strong> ou en <strong>dates flexibles</strong>. Précisez simplement votre destination, votre classe souhaitée et vos dates — ou laissez-nous trouver les meilleures fenêtres tarifaires pour vous.</p>
+  </div>
+</section>
+</div>
+
+<!-- HÔTELS -->
+<div style="background: var(--section-bg);">
+<section id="hotels" style="max-width:1200px;margin:0 auto;padding:80px 5%;">
+  <div class="inner">
+    <div class="reveal">
+      <span class="section-label">IHG · Hilton · Hyatt</span>
+      <h2 class="section-title">Des hôtels <em>d'exception</em><br>pour chaque voyage</h2>
+      <p class="section-sub">Du palace ultra-luxe à la suite prolongée, accédez à l'ensemble des portefeuilles IHG, Hilton et Hyatt avec des remises exclusives.</p>
+    </div>
+
+    <!-- IHG LUXE -->
+    <div class="hotel-category reveal">
+      <div class="cat-title">IHG — Marques de luxe</div>
+      <div class="hotels-row luxury">
+        <div class="hotel-card">
+          <div class="hotel-img">🌿<span class="hotel-img-label">Bien-être & nature</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Six Senses</div>
+            <div class="hotel-tier">Luxe — Retraites & Wellness</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">👑<span class="hotel-img-label">Excellence royale</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Regent Hotels & Resorts</div>
+            <div class="hotel-tier">Luxe — Hôtels iconiques</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🏛️<span class="hotel-img-label">Prestige mondial</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">InterContinental</div>
+            <div class="hotel-tier">Luxe — Destinations premium</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">✨<span class="hotel-img-label">Collection unique</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Vignette Collection</div>
+            <div class="hotel-tier">Luxe — Hôtels indépendants</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IHG UPSCALE -->
+    <div class="hotel-category reveal">
+      <div class="cat-title">IHG — Marques haut de gamme</div>
+      <div class="hotels-row upscale">
+        <div class="hotel-card">
+          <div class="hotel-img">🍸<span class="hotel-img-label">Design & lifestyle</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Kimpton</div>
+            <div class="hotel-tier">Upscale — Boutique & Bar</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🎨<span class="hotel-img-label">Chaque lieu, unique</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Hotel Indigo</div>
+            <div class="hotel-tier">Upscale — Ancré au local</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🌐<span class="hotel-img-label">Qualité constante</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">voco Hotels</div>
+            <div class="hotel-tier">Upscale — Fiable & stylé</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🏯<span class="hotel-img-label">Luxe asiatique</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">HUALUXE</div>
+            <div class="hotel-tier">Upscale — Inspiration chinoise</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IHG MIDSCALE + EXTENDED -->
+    <div class="hotel-category reveal">
+      <div class="cat-title">IHG — Milieu de gamme & séjours prolongés</div>
+      <div class="hotels-row midscale">
+        <div class="hotel-card">
+          <div class="hotel-img">💎<span class="hotel-img-label">Affaires & loisirs</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Crowne Plaza</div>
+            <div class="hotel-tier">Midscale — Business premium</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🌍<span class="hotel-img-label">Partout dans le monde</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Holiday Inn</div>
+            <div class="hotel-tier">Midscale — Famille & voyage</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🏠<span class="hotel-img-label">Comme à la maison</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Staybridge Suites</div>
+            <div class="hotel-tier">Extended Stay — Suites équipées</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🕯️<span class="hotel-img-label">Confort longue durée</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Candlewood Suites</div>
+            <div class="hotel-tier">Extended Stay — Cuisine & espace</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HILTON -->
+    <div class="hotel-category reveal">
+      <div class="cat-title">Hilton — Marques de luxe & haut de gamme</div>
+      <div class="hotels-row hilton">
+        <div class="hotel-card">
+          <div class="hotel-img">🕊️<span class="hotel-img-label">Luxe intemporel</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Waldorf Astoria</div>
+            <div class="hotel-tier">Luxe — Palaces iconiques</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🌅<span class="hotel-img-label">Art de vivre</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Conrad Hotels</div>
+            <div class="hotel-tier">Luxe — Design contemporain</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🏙️<span class="hotel-img-label">Référence mondiale</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Hilton Hotels</div>
+            <div class="hotel-tier">Upscale — Destinations clés</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🍃<span class="hotel-img-label">Lifestyle & style</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Curio Collection</div>
+            <div class="hotel-tier">Upscale — Hôtels singuliers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HYATT -->
+    <div class="hotel-category reveal">
+      <div class="cat-title">Hyatt — Marques de luxe & haut de gamme</div>
+      <div class="hotels-row hyatt">
+        <div class="hotel-card">
+          <div class="hotel-img">🌟<span class="hotel-img-label">Excellence absolue</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Park Hyatt</div>
+            <div class="hotel-tier">Luxe — Art & raffinement</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🌊<span class="hotel-img-label">Destinations resort</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Grand Hyatt</div>
+            <div class="hotel-tier">Luxe — Resorts & villes</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🎭<span class="hotel-img-label">Créatif & vivant</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Andaz</div>
+            <div class="hotel-tier">Upscale — Lifestyle local</div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-img">🧘<span class="hotel-img-label">Bien-être & sérénité</span></div>
+          <div class="hotel-info">
+            <div class="hotel-name">Alila Hotels</div>
+            <div class="hotel-tier">Luxe — Retraites wellness</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- CONTACT -->
+<div style="background: var(--cream);">
+<section id="contact">
+  <div class="reveal">
+    <span class="section-label">Réservation</span>
+    <h2 class="section-title">Tout se fait <em>sur demande</em>,<br>via WhatsApp</h2>
+    <p class="section-sub">Pas de formulaire compliqué. Envoyez-nous un message avec votre demande et nous nous occupons de tout en moins de 24h.</p>
+  </div>
+
+  <div class="contact-grid">
+    <div class="tuto-steps reveal">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Pour un hôtel</h4>
+          <p>Indiquez-nous le nom de l'hôtel ou la marque souhaitée (IHG, Hilton ou Hyatt), la destination, les dates d'arrivée et de départ, et le nombre de personnes.</p>
+          <code>
+            Ex : "Bonjour, je cherche un séjour<br>
+            à l'InterContinental Paris<br>
+            du 15 au 20 juillet, 2 adultes.<br>
+            Chambre Deluxe si possible."
+          </code>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Pour un billet d'avion</h4>
+          <p>Précisez votre destination, la classe (Economy, Premium, Business ou First), si vous avez des dates fixes ou si vous êtes flexible, et le nombre de passagers.</p>
+          <code>
+            Ex : "Vol Paris → Dubai,<br>
+            Business Class, 2 passagers.<br>
+            Date : 10 août, retour flexible<br>
+            autour du 20 août."
+          </code>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>On vous répond sous 24h</h4>
+          <p>Nous comparons les offres disponibles, négocions les meilleurs tarifs et vous envoyons un devis détaillé directement sur WhatsApp. Aucun engagement avant votre confirmation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-cta-box reveal">
+      <h3>Prêt à partir ?<br>Écrivez-nous.</h3>
+      <p>Notre équipe est disponible 7j/7 pour trouver les meilleures offres sur vos destinations de rêve.</p>
+      <a href="https://wa.me/33628207350?text=Bonjour%2C%20je%20souhaite%20une%20offre%20voyage." class="wa-btn" target="_blank">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Contacter sur WhatsApp
+      </a>
+      <div class="contact-details">
+        <p>Disponible 7j/7 · Réponse rapide garantie</p>
+      </div>
+      <div class="response-badges">
+        <span class="badge-item">Réponse < 24h</span>
+        <span class="badge-item">7j/7</span>
+        <span class="badge-item">Devis gratuit</span>
+        <span class="badge-item">Sans engagement</span>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<footer>
+  <span class="footer-logo">Lux<span>Travel</span></span>
+  <p>© 2026 LuxTravel — Tous droits réservés</p>
+  <div class="footer-links">
+    <a href="#vols">Vols</a>
+    <a href="#hotels">Hôtels</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
